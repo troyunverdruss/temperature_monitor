@@ -4,7 +4,12 @@ require 'sqlite3'
 require 'optparse'
 require 'fileutils'
 require 'yaml'
-require 'mysql2'
+require 'mysql'
+require 'pathname'
+
+script_path = File.expand_path File.dirname(__FILE__)
+
+DATABASE_NAME = script_path.to_s + '/temperature.db'
 
 options = {}
 
@@ -23,8 +28,6 @@ OptionParser.new do |opts|
     options[:clean] = true
   end
 end.parse!
-
-DATABASE_NAME = 'temperature.db'
 
 if File.exist? DATABASE_NAME
   db = SQLite3::Database.open DATABASE_NAME
@@ -60,9 +63,6 @@ if options[:upload]
       :port => c['port'],
       :database => c['name']
   )
-
-
-
 end
 
 if options[:clean]
