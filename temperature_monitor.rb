@@ -14,7 +14,7 @@ DATABASE_NAME = script_path.to_s + '/temperature.db'
 options = {}
 
 OptionParser.new do |opts|
-  opts.banner = 'Usage: ./temperatureMonitor.rb'
+  opts.banner = 'Usage: ./temperature_monitor.rb'
 
   opts.on '-r', '--read', 'Read sensors' do |o|
     options[:read] = true
@@ -56,13 +56,17 @@ end
 if options[:upload]
   config = YAML::load_file 'config.yaml'
   c = config['db']
-  client = Mysql2::Client.new(
-      :host => c['host'],
-      :username => c['user'],
-      :password => c['pass'],
-      :port => c['port'],
-      :database => c['name']
-  )
+  begin
+    connection = Mysql.connect(c['host'], c['user'], c['pass'], c['name'], c['port'])
+
+    db.execute('SELECT rowid, sensor_id, epoch_timestamp, temp_reading FROM data WHERE uploaded = 0') do |row|
+      prepared_statement = connection.prepare 'INSERT INTO data (sensor_id, epoch_timestamp, temp_reading) VALUES (?, ?, ?)'
+      prepared_statement.execute row[1], row[2], row[3]
+      db.execute 'UPDATE data SET uploaded = ? WHERE rowid = ?', [1, row[0]]
+    end
+  ensure
+    connection.close if connection
+  end
 end
 
 if options[:clean]
