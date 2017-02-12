@@ -54,7 +54,7 @@ if options[:read]
 end
 
 if options[:upload]
-  config = YAML::load_file 'config.yaml'
+  config = YAML::load_file script_path + '/config.yaml'
   c = config['db']
   begin
     connection = Mysql.connect(c['host'], c['user'], c['pass'], c['name'], c['port'])
