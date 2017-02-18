@@ -40,7 +40,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Degrees °F'
+                    text: 'Degrees F'
                 },
                 min: 40
 //                max: 120
