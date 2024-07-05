@@ -5,6 +5,14 @@ require 'yaml'
 require 'pg'
 require 'pathname'
 
+# CREATE TABLE temperature_readings.readings (
+#     id SERIAL PRIMARY KEY,
+#     sensor_id VARCHAR(32) NOT NULL,
+#     timestamp TIMESTAMP NOT NULL,
+#     temp_reading DOUBLE PRECISION NOT NULL
+# )
+
+
 script_path = File.expand_path File.dirname(__FILE__)
 
 config = YAML::load_file script_path + '/config.yaml'
